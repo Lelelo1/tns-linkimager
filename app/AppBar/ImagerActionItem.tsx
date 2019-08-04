@@ -32,14 +32,17 @@ class ImagerActionItem extends React.Component<ImagerActionItemProps, {}>{
             actionItem.ios.position = "right";
             
         }
+
+        this.actionItemRef.current.addEventListener("OnLoaded", () => {
+            console.log("loaded actionItem");
+        });
+
         // check if android.poistion ins actionbar
     }
     render() {
         return (
             <$ActionItem
-                onPropertyChange={(ev) => {
-                    console.log("propertyChanged: " + this.actionItemRef.current);
-                }}
+                
                 
                 ref={this.actionItemRef}
                 text={this.props.text}
