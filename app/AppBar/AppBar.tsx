@@ -26,10 +26,13 @@ export default class AppBar extends React.Component {
         view.style.backgroundColor = new Color('green');
         actionBar.titleView = view;
     }
-
+    /* icons need to be completely white. use unfilled/filled for toggle  */
     render() {
         return (
-            <$ActionBar ref={this.actionBarRef} title={"LinkImager"}>
+            <$ActionBar
+                ref={this.actionBarRef} title={"LinkImager"}
+                color={new Color('#ff000000')}
+            >
                 <$ImagerActionItem text="visible" />
                 <$ImagerActionItem text="control" />
                 <$ImagerActionItem text="settings" />
