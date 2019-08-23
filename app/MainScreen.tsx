@@ -1,7 +1,7 @@
 import * as React from "react";
 import ImagerScreen from "./ImagerScreen/ImagerScreen";
-import { $Page, $StackLayout, $Button, $AbsoluteLayout } from "react-nativescript";
-import { Page, EventData, Color } from "tns-core-modules/ui/page/page";
+import { $Page, $StackLayout, $Button, $AbsoluteLayout, $ActionBar } from "react-nativescript";
+import { Page, EventData, Color, PercentLength } from "tns-core-modules/ui/page/page";
 import AppBar from "./AppBar/AppBar";
 import { observable, autorun, when } from "mobx";
 import { device } from "tns-core-modules/platform/platform";
@@ -14,46 +14,26 @@ export default class MainScreen extends React.Component {
     private imagerScreenRef = React.createRef<ImagerScreen>();
     private appBarRef = React.createRef<AppBar>();
     
-    // ios
-    @observable
-    private uiNavBar: UINavigationBar;
-    @observable
-    private uiView: UIView;
+
     componentDidMount() {
-        const actionBar = this.appBarRef.current.actionBarRef.current;
-        // const absoluteLayout = this.imagerScreenRef.current.absoluteLayoutRef.current;
 
-        // console.log("actionBar: " + actionBar + " and " + absoluteLayout);
-        
-        actionBar.addEventListener("onLoaded", (get) => {
-            this.uiNavBar = (get.object as ActionBar).ios;
-        });
-        /*
-        absoluteLayout.addEventListener("onLoaded", (get) => {
-            this.uiView = (get.object as AbsoluteLayout).ios;
-        });
-        */
-        when(() => this.uiNavBar != null && this.uiView != null, () => {
-            if(device.os == "iOS") {
-                /*
-                console.log("setting: " + this.uiNavBar + " and " + this.uiView);
-                this.uiView.frame = CGRectMake(0, 0, 100, 200);
-                this.uiView.backgroundColor = UIColor.blueColor;
-                */
-                
-            }
-        });
-
-        // (actionBar.ios as UINavigationBar).sendSubviewToBack(absoluteLayout.ios);
     }
 
     render() {
+
         return (
             <$Page
                 ref={this.pageRef}
             >
-                <AppBar ref={this.appBarRef}/>
-                <ImagerScreen />
+                <$ActionBar onLoaded={(ev) => {
+                    const actionBar = ev.object as ActionBar;
+                    this.appBarRef.current.build(actionBar.height);
+                    this.pageRef.current.actionBarHidden = true;
+                }}/>
+                <$AbsoluteLayout>
+                    <ImagerScreen ref={this.imagerScreenRef} />
+                    <AppBar ref={this.appBarRef}/>
+                </$AbsoluteLayout>
             </$Page>
         )
     }

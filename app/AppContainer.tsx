@@ -15,12 +15,22 @@ class AppContainer extends React.Component {
     private mainScreenRef = React.createRef<MainScreen>();
 
     componentDidMount() {
+
+        rootRef.current.addEventListener(Frame.loadedEvent, () => {
+
+        });
+
         rootRef.current.navigate({
             create:() => {
+
+                
                 const page = this.mainScreenRef.current.pageRef.current;
+                
+                
                 return page;
             }
         });
+        
     }
     render() {
         return (

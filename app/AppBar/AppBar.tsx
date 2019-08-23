@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { $ActionItem, $ActionBar, $StackLayout } from "react-nativescript";
+import { $ActionItem, $ActionBar, $StackLayout, $FlexboxLayout, $Button, $NavigationButton } from "react-nativescript";
 import $ImagerActionItem from "./ImagerActionItem";
 import { ActionItem, IOSActionItemSettings, AndroidActionItemSettings, ActionBar } from "tns-core-modules/ui/action-bar";
 import ToggleActionItem from "./ImagerActionItem";
@@ -10,58 +10,32 @@ import { FlexboxLayout } from "tns-core-modules/ui/layouts/flexbox-layout/flexbo
 import { Color } from "tns-core-modules/color/color";
 import { Label } from "tns-core-modules/ui/label/label";
 import { rootRef } from "../AppContainer";
-import { View } from "tns-core-modules/ui/core/view/view";
+import { View, PercentLength } from "tns-core-modules/ui/core/view/view";
 import { ContentView, Page } from "tns-core-modules/ui/page/page";
 
 export default class AppBar extends React.Component {
     
-    state = {
-        n: 0
-    }
-
-    actionBarRef = React.createRef<ActionBar>();
+    appBarRef = React.createRef<FlexboxLayout>();
 
     componentDidMount() {
-
+        console.log("appBar did mount");
     }
         
-    color = new Color('green');
+
     /* icons need to be completely white. use unfilled/filled for toggle  */
     render() {
         return (
-            <$ActionBar
-                ref={this.actionBarRef}
-                title={"LinkImager"}
-                onLoaded={(get) => {
-                    
-                    setTimeout(() => {
-                        this.setTransparent(get.object as ActionBar);
-                    }, 0.00000001); // bug https://github.com/NativeScript/NativeScript/issues/7640 
-                    
-                   /*
-                   this.setTransparent(get.object as ActionBar);
-                   this.setState({n: 1}, () => {
-                       console.log("n iiiiz: " + this.state.n);
-                   });
-                   */
-                }}
-            >
-            <$ImagerActionItem text="visible" />
-            <$ImagerActionItem text="control" />
-            <$ImagerActionItem text="settings" />
-        </$ActionBar>
+            <$FlexboxLayout ref={this.appBarRef} backgroundColor={new Color('transparent')}>
+                <$Button text={"appBar items"}/>
+                {/* place custom backarrow, custom title text, custom buttons as actionitems here */}
+            </$FlexboxLayout>
         );
     }
-    setTransparent = (actionBar: ActionBar) => {
-        console.log("actionbaaaar ios: " + actionBar.ios);
-        if(device.os == "iOS") {
-            // https://stackoverflow.com/questions/49352415/transparent-actionbar-using-nativescript-in-combination-with-angular
-            var navBar = this.actionBarRef.current.ios as UINavigationBar;
-            navBar.translucent = true;
-            navBar.setBackgroundImageForBarMetrics(UIImage.new(), UIBarMetrics.Default);
-            navBar.shadowImage = UIImage.new();
-            navBar.backgroundColor = UIColor.clearColor;
-        }
+
+    build(height: PercentLength) {
+        const appBar = this.appBarRef.current;
+        appBar.width = PercentLength.parse("100%");
+        appBar.height = height;
     }
 }
 
