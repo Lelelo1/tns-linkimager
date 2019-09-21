@@ -1,0 +1,7 @@
+Tns link imager info:
+
+Interceptor: is needed to fix duplicate ui events otherwise present with only aboslutelayout (imagerScreen). Should be used to hold the current image display.
+
+Create swipe back animation.
+
+* present back arrow in actionBar
