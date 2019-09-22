@@ -1,13 +1,14 @@
 import * as React from "react";
-import { $AbsoluteLayout, $Button, $StackLayout, $Image } from "react-nativescript";
+import { $AbsoluteLayout, $Button, $StackLayout, $Image, $GridLayout } from "react-nativescript";
 import { Color } from "tns-core-modules/color/color";
 import { CameraPlus } from "@nstudio/nativescript-camera-plus";
 import { Button } from "tns-core-modules/ui/button/button";
-import { AbsoluteLayout, Page, View, StackLayout, Image } from "react-nativescript/dist/client/ElementRegistry";
+import { AbsoluteLayout, Page, View, StackLayout, Image, GridLayout } from "react-nativescript/dist/client/ElementRegistry";
 import { device } from "tns-core-modules/platform/platform";
 import { PercentLength } from "tns-core-modules/ui/page/page";
 import { TouchGestureEventData, PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import CreateController from "./Controllers/CreateController";
+import MoveController from "./Controllers/MoveController";
 // https://github.com/PeterStaev/nativescript-photo-editor
 
 /* the conatainer/layer for all the imager ui and gestures*/
@@ -19,16 +20,23 @@ export default class ImagerScreen extends React.Component {
     interactorRef = React.createRef<Image>();
 
     private _onImageCreated = (imageCreated: Image) => {
+        const imagerScreen = this.imagerScreenRef.current;
+        const interactor = this.interactorRef.current;
+
         imageCreated.addEventListener("onTap", () => {
             console.log("tapped image");
-        })
+        });
+        
+        // MoveController.get(interactor).attach(imageCreated);
+        MoveController.get(imagerScreen).attach(imageCreated);
+        
     }
 
     componentDidMount() {
         const imagerScreen = this.imagerScreenRef.current;
         const interactor = this.interactorRef.current;
 
-        CreateController.getController(imagerScreen, interactor, this._onImageCreated);
+        CreateController.get(imagerScreen, interactor, this._onImageCreated);
         /*
         const cameraView = new CameraPlus();
         cameraView.width = PercentLength.parse("100%");
@@ -43,7 +51,6 @@ export default class ImagerScreen extends React.Component {
                 ref={this.imagerScreenRef}
                 width={PercentLength.parse("100%")}
                 height={PercentLength.parse("100%")}
-                
             >
                 <$Image
                     ref={this.interactorRef}
@@ -52,7 +59,7 @@ export default class ImagerScreen extends React.Component {
                     onTap={() => {
                     
                         const imagerScreen = this.imagerScreenRef.current;
-                        console.log(imagerScreen.getChildrenCount());
+                        console.log(imagerScreen.getChildrenCount() - 1);
                        /*
                         const stack = new StackLayout();
                         stack.backgroundColor = new Color('green');

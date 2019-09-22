@@ -5,3 +5,7 @@ Interceptor: is needed to fix duplicate ui events otherwise present with only ab
 Create swipe back animation.
 
 * present back arrow in actionBar
+
+
+See if can generate ui tests:
+https://github.com/NativeScript/nativescript-dev-appium/issues

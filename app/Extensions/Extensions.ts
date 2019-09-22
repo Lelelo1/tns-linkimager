@@ -1,18 +1,15 @@
 
-import { ActionBar } from "tns-core-modules/ui/action-bar";
-import { device } from "tns-core-modules/platform/platform";
+// global extensions
 
-declare module "tns-core-modules/ui/action-bar" {
-    interface ActionBar {
-        actionItemsOrientation: string;
+import { Image } from "tns-core-modules/ui/image/image";
+import "../Mixins/Mixins";
+
+/*
+// for accessing testable from image
+declare module "tns-core-modules/ui/image/image" {
+    interface Image {
+        Testable(): Testable<typeof Image>.Test: 
     }
 }
-/*
-Object.defineProperty(ActionBar.prototype, "left", {
-    get (this: ActionBar) {
-        if (device.os == "iOS") {
-            return this as 
-        }
-    }
-});
 */
+// (extension methdos can be used to access the specific mixin type object)

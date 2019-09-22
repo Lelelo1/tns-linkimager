@@ -1,13 +1,16 @@
 
-import {AbsoluteLayout, Image, View } from "react-nativescript/dist/client/ElementRegistry";
+
+import { AbsoluteLayout } from "tns-core-modules/ui/layouts/absolute-layout/absolute-layout";
+import { GridLayout } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
+import { Image } from "tns-core-modules/ui/image/image";
+
 import { TouchGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 declare module "react-nativescript/dist/client/ElementRegistry" {
     interface AbsoluteLayout {
         addImage(this: AbsoluteLayout, image: Image, x: number,
-             y: number, width: number, height: number);
+             y: number, width: number, height: number): void;
     }
 }
-
 AbsoluteLayout.prototype.addImage = function (this: AbsoluteLayout, image: Image, x: number,
     y: number, width: number, height: number) {
         image.left = x;
