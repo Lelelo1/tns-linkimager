@@ -25,8 +25,21 @@ function Testable<T extends Constructor<{}>>(Base: T) {
 }
 
 const TestableImage = Testable(Image);
-export type TestableImage = typeof Testable<Image>;
 
+interface Imager {
+    owner: Imager;
+    
+}
+
+function Tagged<T extends Constructor<{}>>(Base: T): Constructor<Tagged> & T {
+    return class extends Base {
+        _tag: string;
+        constructor(...args: any[]) {
+            super(...args);
+            this._tag = "";
+        }
+    }
+}
 export const getImage = () => {
     return new TestableImage();
 }
