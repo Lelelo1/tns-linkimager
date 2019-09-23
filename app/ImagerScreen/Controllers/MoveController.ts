@@ -30,6 +30,8 @@ export default class MoveController {
 
         } else {
             // this.moveImage.removeEventListener("onPan", this._pan);
+            MoveController.imagerScreen.removeChild(this.moveImage);
+            MoveController.imagerScreen.addChild(this.moveImage);
             this.moveImage = null;
         }
     }
