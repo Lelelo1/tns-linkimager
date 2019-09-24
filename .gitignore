@@ -4,6 +4,7 @@ node_modules/
 platforms/
 
 # NativeScript Template
+.awcache
 *.js.map
 *.js
 !webpack.config.js
