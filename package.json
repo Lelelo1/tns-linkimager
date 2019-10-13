@@ -19,7 +19,8 @@
     "nativescript": "^6.0.2",
     "nativescript-theme-core": "^1.0.6",
     "react": "^16.8.6",
-    "react-nativescript": "^0.10.0",
+    "react-nativescript": "^0.13.0",
+    "rns-reactify": "git+https://github.com/Lelelo1/rns-reactify.git",
     "tns-core-modules": "6.0.1",
     "tns-platform-declarations": "^6.0.1"
   },
