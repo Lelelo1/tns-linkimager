@@ -22,8 +22,8 @@ export default class MainScreen extends React.Component {
 
     componentDidMount() {
         
+        /*
         CameraScreen.get().build(this.containerRef.current);
-        
         // fix #8: https://github.com/Lelelo1/tns-linkimager/issues/8
         if(device.os == "iOS") {
             on(resumeEvent, () => {
@@ -31,7 +31,7 @@ export default class MainScreen extends React.Component {
                 CameraScreen.get().refresh();
             })
         } 
-        
+        */
     }
 
     render() {
@@ -46,7 +46,7 @@ export default class MainScreen extends React.Component {
                     this.pageRef.current.actionBarHidden = true;
                 }}/>
                 <$AbsoluteLayout ref={this.containerRef}>
-                    {/* <ImagerScreen ref={this.imagerScreenRef} /> */}
+                    <ImagerScreen ref={this.imagerScreenRef} />
                     <AppBar ref={this.appBarRef}/>
                 </$AbsoluteLayout>
             </$Page>

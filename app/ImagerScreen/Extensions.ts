@@ -2,7 +2,7 @@
 
 import { AbsoluteLayout } from "tns-core-modules/ui/layouts/absolute-layout/absolute-layout";
 import { GridLayout } from "tns-core-modules/ui/layouts/grid-layout/grid-layout";
-import { Image } from "tns-core-modules/ui/image/image";
+import { Image } from "react-nativescript/dist/client/ElementRegistry";
 
 import { TouchGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 declare module "react-nativescript/dist/client/ElementRegistry" {

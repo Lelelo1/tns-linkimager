@@ -1,4 +1,5 @@
 import { Observable, Image } from "react-nativescript/dist/client/ElementRegistry";
+import { Media, ILinkable, PercentRectangle } from "./Types";
 
 // https://github.com/microsoft/TypeScript/pull/13743
 
@@ -24,22 +25,23 @@ function Testable<T extends Constructor<{}>>(Base: T) {
     }
 }
 
-const TestableImage = Testable(Image);
+export class LinkImage extends Testable(Image) implements ILinkable {
+    owners: ILinkable[] = []
+    media: Media;
+    url: string;
+    links: ILinkable[] = [];
+    percentRectangle: PercentRectangle
 
-interface Imager {
-    owner: Imager;
-    
-}
-
-function Tagged<T extends Constructor<{}>>(Base: T): Constructor<Tagged> & T {
-    return class extends Base {
-        _tag: string;
-        constructor(...args: any[]) {
-            super(...args);
-            this._tag = "";
+    constructor(linkable: ILinkable) {
+        super();
+        if(linkable.owners) {
+            this.owners = linkable.owners;
         }
+        this.media = linkable.media;
+        this.url = linkable.url;
+        if(linkable.links) {
+            this.links = linkable.links;
+        }
+        this.percentRectangle = linkable.percentRectangle;
     }
-}
-export const getImage = () => {
-    return new TestableImage();
-}
+};
