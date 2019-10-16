@@ -4,7 +4,6 @@ import { TouchGestureEventData, PanGestureEventData } from "tns-core-modules/ui/
 import ImagerScreen from ".././ImagerScreen";
 import "../Extensions"; // need to import something to get access to extension methods
 import { AbsoluteLayout, Image, Color, View } from "react-nativescript/dist/client/ElementRegistry";
-import { getImage } from "~/Mixins/Mixins";
 
 export default class CreateController {
 
@@ -41,7 +40,7 @@ export default class CreateController {
         const dY = pan.deltaY;
         if(this._shouldDraw()) {
             if(!this._createImage) {
-                this._createImage = getImage();
+                this._createImage = new Image(); // <-- needs more setup/setup as linkimage
             }
             // console.log("_touched: " + this._touched);
             this._createImage.backgroundColor = new Color('blue'); // for testing

@@ -21,6 +21,9 @@ const rightImage = new LinkImage({
     percentRectangle : new PercentRectangle(70, 38, 20, 30)
 });
 
+centerImage.owners.push(startImage);
+rightImage.owners.push(startImage);
+
 startImage.links.push(centerImage);
 startImage.links.push(rightImage);
 

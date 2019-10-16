@@ -13,12 +13,15 @@ import { Reactified } from "rns-reactify/Reactified/Reactified";
 import { LinkImage } from "~/Mixins/Mixins";
 import ViewModel from "../ViewModel";
 import { PercentRectangle, Rectangle } from "~/Mixins/Types";
+import { observer } from "mobx-react";
+import { autorun } from "mobx";
 // https://github.com/PeterStaev/nativescript-photo-editor
 
 const RNSLinkImage = Reactified(LinkImage, "linkImage");
 
 
 /* the conatainer/layer for all the imager ui and gestures*/
+@observer
 export default class ImagerScreen extends React.Component {
     
     // stackLayoutRef = React.createRef<StackLayout>()
@@ -27,7 +30,8 @@ export default class ImagerScreen extends React.Component {
     interactorRef = React.createRef<Image>();
 
     private _onImageCreated = (imageCreated: Image) => {
-        const imagerScreen = this.imagerScreenRef.current;
+        const viewModel = ViewModel.get();
+        const imagerScreen = viewModel.imagerScreenRef.current;
         const interactor = this.interactorRef.current;
 
         imageCreated.addEventListener("onTap", () => {
@@ -39,26 +43,28 @@ export default class ImagerScreen extends React.Component {
         
     }
 
-    currentLinkImageDisplayed: LinkImage = ViewModel.get().project;
-
     componentDidMount() {
-        const imagerScreen = this.imagerScreenRef.current;
+        const viewModel = ViewModel.get();
+        const imagerScreen = viewModel.imagerScreenRef.current;
         const interactor = this.interactorRef.current;
 
         CreateController.get(imagerScreen, interactor, this._onImageCreated);
         
-        
-        setTimeout(() => {
-            this.renderAreas();
-        }, 0.000000000000000001)
-        
+        autorun(() => {
+            if(viewModel.currentLinkImageDisplayed) {
+                setTimeout(() => {
+                    this.renderAreas();
+                }, 0.000000000000000001)
+            }
+        })
+
        // this.renderAreas();
     }
 
     render() {
         return (
             <$AbsoluteLayout
-                ref={this.imagerScreenRef}
+                ref={ViewModel.get().imagerScreenRef}
                 width={PercentLength.parse("100%")}
                 height={PercentLength.parse("100%")}
             >
@@ -75,15 +81,16 @@ export default class ImagerScreen extends React.Component {
                 stretch={"aspectFill"}
                 onTap={() => {
                     const imagerScreen = this.imagerScreenRef.current;
-                    console.log(imagerScreen.getChildrenCount() - 1);
+                    // console.log(imagerScreen.getChildrenCount() - 1);
                 }}
                 src={this._imageOrLogo()}
         />
     }
     // can also render bad url/no resource message
     private _imageOrLogo() {
-        const url = this.currentLinkImageDisplayed.url;
-        return this.currentLinkImageDisplayed.url ? url : null; //logo
+        const viewModel = ViewModel.get();
+        const url = viewModel.currentLinkImageDisplayed.url;
+        return viewModel.currentLinkImageDisplayed.url ? url : null; //logo
     }
 
     private bounds(percentRectangle: PercentRectangle): Rectangle {
@@ -101,8 +108,10 @@ export default class ImagerScreen extends React.Component {
     }
 
     renderAreas() {
-        
-        this.currentLinkImageDisplayed.links.map((data) => {
+        const viewModel = ViewModel.get();
+
+        // render new areas
+        viewModel.currentLinkImageDisplayed.links.map((data) => {
             
             const paint = this.bounds(data.percentRectangle);
             console.log("paint: " + JSON.stringify(paint));
@@ -111,12 +120,15 @@ export default class ImagerScreen extends React.Component {
             area.src = data.url;
             area.backgroundColor = new Color("purple");
             area.on("onTap", () => {
-                this.currentLinkImageDisplayed = new LinkImage(data);
+                console.log("tap area");
+                viewModel.clearAreas();
+                viewModel.currentLinkImageDisplayed = new LinkImage(data);
             });
-            this.imagerScreenRef.current.addImage(area, paint.x, paint.y, paint.width, paint.height);
+            area.stretch = "aspectFill"
+            viewModel.imagerScreenRef.current.addImage(area, paint.x, paint.y, paint.width, paint.height);
         });
-        
     }
+    
 }
 
 
