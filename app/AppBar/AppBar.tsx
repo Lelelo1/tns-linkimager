@@ -74,6 +74,7 @@ export default class AppBar extends React.Component {
     _navigateBack() {
         console.log("navigateBack");
         const viewModel = ViewModel.get();
+        viewModel.clearAreas();
         let from = viewModel.currentLinkImageDisplayed;
         viewModel.currentLinkImageDisplayed = new LinkImage(from.owners[0]);
         viewModel.update = !viewModel.update;

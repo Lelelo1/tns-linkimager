@@ -1,12 +1,9 @@
 import * as React from "react";
-import { $AbsoluteLayout, $Button, $StackLayout, $Image, $GridLayout } from "react-nativescript";
+import { $AbsoluteLayout, $Image } from "react-nativescript";
 import { Color } from "tns-core-modules/color/color";
-import { CameraPlus } from "@nstudio/nativescript-camera-plus";
-import { Button } from "tns-core-modules/ui/button/button";
-import { AbsoluteLayout, Page, View, StackLayout, Image, GridLayout } from "react-nativescript/dist/client/ElementRegistry";
-import { device } from "tns-core-modules/platform/platform";
+
+import { Image} from "react-nativescript/dist/client/ElementRegistry";
 import { PercentLength, Length } from "tns-core-modules/ui/page/page";
-import { TouchGestureEventData, PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import CreateController from "./Controllers/CreateController";
 import MoveController from "./Controllers/MoveController";
 import { Reactified } from "rns-reactify/Reactified/Reactified";
@@ -15,8 +12,8 @@ import ViewModel from "../ViewModel";
 import { PercentRectangle, Rectangle, Media } from "~/Mixins/Types";
 import { observer } from "mobx-react";
 import { autorun } from "mobx";
-import { PhotoEditor } from "@proplugins/nativescript-photo-editor";
-import { ImageSource, fromUrl } from "tns-core-modules/image-source/image-source";
+import { percentRectangle, bounds } from "./Utils";
+
 // import { Cache } from "tns-core-modules/ui/image-cache/image-cache";
 
 // https://github.com/PeterStaev/nativescript-photo-editor
@@ -34,15 +31,13 @@ export default class ImagerScreen extends React.Component {
 
     private _onImageCreated = (imageCreated: Image) => {
         const viewModel = ViewModel.get();
-        const imagerScreen = viewModel.imagerScreenRef.current;
-        const interactor = this.interactorRef.current;
-        // MoveController.get(imagerScreen).attach(imageCreated);
+        MoveController.get(viewModel.imagerScreenRef.current).attach(imageCreated);
         console.log("imageCreated");
-        this.percentRectangle(imageCreated).then((percentRectangle) => {
-            console.log("then");
-            const link = new LinkImage({url: null, media: Media.photo, percentRectangle});
+        percentRectangle(imageCreated, this.interactorRef.current).then((percentRectangle) => {
+            const link = new LinkImage({ url: null, media: Media.photo, percentRectangle });
             viewModel.combine(viewModel.currentLinkImageDisplayed, link);
-            
+
+            viewModel.update = !viewModel.update;
         });
         
     }
@@ -108,63 +103,6 @@ export default class ImagerScreen extends React.Component {
         return null;
     }
 
-    private percentRectangle(bounds: Rectangle | Image): Promise<PercentRectangle> {
-        console.log("percent rectangle");
-        let rectangle = bounds instanceof Rectangle ? bounds: null;
-        let image = bounds instanceof Image ? bounds: null;
-
-        const compare = this.interactorRef.current;
-        if(compare) {
-            console.log("compare");
-            if(compare.getMeasuredWidth() < 1 || compare.getMeasuredHeight() < 1) {
-                throw new Error("failed to get bounds of interactor to set percentRectangle values. Could not set the percentages");
-            }
-            
-            if(rectangle) {
-                console.log("rectangle");
-                return new Promise<PercentRectangle>((reject, resolve) => {
-                    setTimeout(() => {
-                        resolve(new PercentRectangle(
-                            rectangle.x / compare.getActualSize().width,
-                            rectangle.y / compare.getActualSize().height,
-                            rectangle.width /  compare.getActualSize().width,
-                            rectangle.height / compare.getActualSize().height 
-                        ));
-                    }, 0.000000000000001);
-                });
-            }
-            return new Promise<PercentRectangle>((resolve, reject) => {
-                setTimeout(() => {
-                    console.log("returning ");
-                    resolve(new PercentRectangle(
-                        image.getLocationInWindow().x / compare.getActualSize().width,
-                        image.getLocationInWindow().y / compare.getActualSize().height,
-                        image.getActualSize().width /  compare.getActualSize().width,
-                        image.getActualSize().height / compare.getActualSize().height 
-                    ));
-                }, 0.00000000000000001);
-            });
-        }
-        console.log("returning null");
-
-    }
-    private bounds(percentRectangle: PercentRectangle): Rectangle {
-        const compare = this.interactorRef.current;
-        if(compare) {
-            // console.log("compare width: " + compare.getActualSize() + ", height: " + compare.getActualSize());
-            if(compare.getMeasuredWidth() < 1 || compare.getMeasuredHeight() < 1) {
-                throw new Error("failed to get bounds of interactor to messure areas. Could determine bounds");
-            }
-            return new Rectangle(
-                percentRectangle.x * compare.getActualSize().width,
-                percentRectangle.y * compare.getActualSize().height,
-                percentRectangle.width * compare.getActualSize().width,
-                percentRectangle.height * compare.getActualSize().height
-            )
-        }
-        return new Rectangle(-0.01, -0.01, -0.01, -0.01);
-    }
-
     renderAreas() {
         const viewModel = ViewModel.get();
         console.log("render areas");
@@ -175,7 +113,7 @@ export default class ImagerScreen extends React.Component {
             console.log("count " + viewModel.currentLinkImageDisplayed.links.length);
             viewModel.currentLinkImageDisplayed.links.map((data) => {
                 console.log("map");
-                const paint = this.bounds(data.percentRectangle);
+                const paint = bounds(data.percentRectangle, this.interactorRef.current);
                 console.log("paint: " + JSON.stringify(paint));
                 
                 const area = new Image();
