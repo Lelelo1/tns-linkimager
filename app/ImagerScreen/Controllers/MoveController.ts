@@ -34,6 +34,7 @@ export default class MoveController {
             MoveController.imagerScreen.addChild(this.moveImage);
             this.moveImage = null;
         }
+        return touch;
     }
     prevDeltaX: number;
     prevDeltaY: number;

@@ -24,6 +24,7 @@ export class PercentRectangle {
     height: number;
 
     constructor(x: number, y: number, width: number, height: number) {
+        if(x > 1 || y > 1 || width > 1 || height > 1) throw Error("PercentRectangle can only be initalized with value of 1 to 0");
         this.x = x;
         this.y = y;
         this.width = width;

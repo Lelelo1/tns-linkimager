@@ -47,7 +47,7 @@ export default class MainScreen extends React.Component {
                 }}/>
                 <$AbsoluteLayout ref={this.containerRef}>
                     <ImagerScreen ref={this.imagerScreenRef} />
-                    <AppBar ref={this.appBarRef}/>
+                    <AppBar ref={this.appBarRef} />
                 </$AbsoluteLayout>
             </$Page>
         )

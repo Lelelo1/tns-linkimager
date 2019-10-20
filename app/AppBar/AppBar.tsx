@@ -1,8 +1,8 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { $ActionItem, $ActionBar, $StackLayout, $FlexboxLayout, $Button, $NavigationButton, $FormattedString, $Span, $Image } from "react-nativescript";
+import { $ActionItem, $ActionBar, $StackLayout, $FlexboxLayout, $Button, $NavigationButton, $FormattedString, $Span, $Image, $Placeholder } from "react-nativescript";
 import $ImagerActionItem from "./ImagerActionItem";
-import { ActionItem, IOSActionItemSettings, AndroidActionItemSettings, ActionBar } from "tns-core-modules/ui/action-bar";
+import { ActionItem, IOSActionItemSettings, AndroidActionItemSettings, ActionBar, NavigationButton } from "tns-core-modules/ui/action-bar";
 import ToggleActionItem from "./ImagerActionItem";
 import { observable, observe, autorun, decorate } from "mobx";
 import { device } from "tns-core-modules/platform/platform";
@@ -14,14 +14,22 @@ import { View, PercentLength } from "tns-core-modules/ui/core/view/view";
 import { ContentView, Page } from "tns-core-modules/ui/page/page";
 import ViewModel from "~/ViewModel";
 import { LinkImage } from "~/Mixins/Mixins";
+import { Placeholder } from "tns-core-modules/ui/placeholder/placeholder";
+import { fromUrl, ImageSource } from "tns-core-modules/image-source/image-source";
+import { PhotoEditor } from "@proplugins/nativescript-photo-editor";
 
 @observer
 export default class AppBar extends React.Component {
     
     appBarRef = React.createRef<FlexboxLayout>();
-
+    private placeholderRef = React.createRef<Placeholder>();
     componentDidMount() {
         console.log("appBar did mount");
+
+        autorun(() => {
+            const trigger = ViewModel.get().update;
+            this.setState({});
+        })
     }
         
 
@@ -34,7 +42,9 @@ export default class AppBar extends React.Component {
                 flexDirection={"row-reverse"}
                 justifyContent={"space-between"}
             >
-                <$Button text={"other appBar items"} margin={5}/>
+                <$Button text={"other appBar items"} margin={5} onTap={() => {
+                    this.__testPhotoEditor__();
+                }}/>
                 {this._renderBackArrow()}
                 {/* place custom backarrow, custom title text, custom buttons as actionitems here */}
             </$FlexboxLayout>
@@ -42,6 +52,7 @@ export default class AppBar extends React.Component {
     }
 
     _renderBackArrow() {
+        
         const viewModel = ViewModel.get();
         return viewModel.currentLinkImageDisplayed.owners.length > 0 ? (
             <$Image
@@ -65,6 +76,7 @@ export default class AppBar extends React.Component {
         const viewModel = ViewModel.get();
         let from = viewModel.currentLinkImageDisplayed;
         viewModel.currentLinkImageDisplayed = new LinkImage(from.owners[0]);
+        viewModel.update = !viewModel.update;
         from = null;
     }
 
@@ -72,6 +84,19 @@ export default class AppBar extends React.Component {
         const appBar = this.appBarRef.current;
         appBar.width = PercentLength.parse("100%");
         appBar.height = height;
+    }
+    __testPhotoEditor__() {
+        const viewModel = ViewModel.get();
+        const photoEditor = new PhotoEditor();
+        fromUrl(viewModel.currentLinkImageDisplayed.url).then((imageSource) => {
+            console.log("url imagesource: " + JSON.stringify(imageSource));
+            photoEditor.editPhoto({ imageSource }).then((edited: ImageSource) => {
+                viewModel.currentLinkImageDisplayed.imageSource = edited;
+                
+                // to trigget a mobx -> react update 
+                viewModel.update = !viewModel.update;
+            });
+        })
     }
 }
 

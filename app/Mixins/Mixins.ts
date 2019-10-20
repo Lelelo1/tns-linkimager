@@ -45,3 +45,20 @@ export class LinkImage extends Testable(Image) implements ILinkable {
         this.percentRectangle = linkable.percentRectangle;
     }
 };
+
+
+// might remove this and have combine/seperate in viewmodel
+export interface LinkImage {
+    setOwner(owner: LinkImage): void;
+    removeOwner(owner: LinkImage): void;
+    setLink(link: LinkImage): void;
+    removeLink(link: LinkImage): void
+}
+LinkImage.prototype.setOwner = function(this: LinkImage, owner: LinkImage) {
+    if(!this.owners.indexOf(owner)) this.owners.push(owner);
+}
+
+LinkImage.prototype.setLink = function(this: LinkImage, link: LinkImage) {
+    if(!this.owners.indexOf(link)) this.links.push(link);
+}
+ 
