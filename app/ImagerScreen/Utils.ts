@@ -7,7 +7,6 @@ export function percentRectangle(bounds: Image, interactor: Image): Promise<Perc
     console.log("percent rectangle");
     
     let image = bounds as Image;
-    console.log("rectangle: " + rectangle + " and image: " + rectangle);
     const compare = interactor;
     if(compare) {
         console.log("compare");

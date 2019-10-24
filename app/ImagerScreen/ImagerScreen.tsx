@@ -9,10 +9,11 @@ import MoveController from "./Controllers/MoveController";
 import { Reactified } from "rns-reactify/Reactified/Reactified";
 import { LinkImage } from "~/Mixins/Mixins";
 import ViewModel from "../ViewModel";
-import { PercentRectangle, Rectangle, Media } from "~/Mixins/Types";
+import { PercentRectangle, Rectangle, Media, ILinkable } from "~/Mixins/Types";
 import { observer } from "mobx-react";
 import { autorun } from "mobx";
 import { percentRectangle, bounds } from "./Utils";
+import { rootRef, shell, Screens } from "~/AppContainer";
 
 // import { Cache } from "tns-core-modules/ui/image-cache/image-cache";
 
@@ -121,11 +122,11 @@ export default class ImagerScreen extends React.Component {
                 area.backgroundColor = new Color("purple");
                 area.on("onTap", () => {
                     console.log("tap area: ");
-                    viewModel.clearAreas();
-                    const to = new LinkImage(data);
-                    viewModel.combine(viewModel.currentLinkImageDisplayed, to);
-                    viewModel.currentLinkImageDisplayed = to;
-                    viewModel.update = !viewModel.update;
+                    if(data.url) {
+                        this.selectImageWithMedia(data);
+                    } else {
+                        shell.navigate(Screens.camera);
+                    }
                 });
                 area.stretch = "aspectFill";
                 console.log("current: "  + viewModel.imagerScreenRef.current);
@@ -134,6 +135,14 @@ export default class ImagerScreen extends React.Component {
                 // MoveController.get(imagerScreen).attach(area);
             });
         }
+    }
+    selectImageWithMedia(data: ILinkable) {
+        const viewModel = ViewModel.get();
+        viewModel.clearAreas();
+        const to = new LinkImage(data);
+        viewModel.combine(viewModel.currentLinkImageDisplayed, to);
+        viewModel.currentLinkImageDisplayed = to;
+        viewModel.update = !viewModel.update;
     }
     
 }

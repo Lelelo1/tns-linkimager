@@ -46,4 +46,7 @@ export default class ViewModel {
             link.owners.push(owner);
         }
     }
+
+    @observable
+    showCamera = false;
 }

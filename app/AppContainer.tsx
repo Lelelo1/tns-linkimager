@@ -6,13 +6,36 @@ import { decorate, observable } from "mobx";
 import $AppBar from "./AppBar/AppBar";
 import MainScreen from "./MainScreen";
 import { device } from "tns-core-modules/platform/platform";
+import CameraScreen from "./CameraScreen";
+
 export const rootRef: React.RefObject<Frame> = React.createRef<Frame>();
+
+const mainScreenRef = React.createRef<MainScreen>();
+const cameraScreenRef = React.createRef<CameraScreen>();
+
+// for navigating
+export const shell = {
+    navigate : (screen : Screens) => {
+        const frame = rootRef.current;
+        switch(screen) {
+            case (Screens.main) : { 
+                frame.navigate({ create: () => mainScreenRef.current.pageRef.current }) // <- won't be used user can navigate back
+            }
+            case (Screens.camera) : {
+                frame.navigate({ create: () => cameraScreenRef.current.pageRef.current });
+            }
+        }
+    },
+}
+export enum Screens { 
+    "main" = "main",
+    "camera" = "camera"
+}
+
 
 class AppContainer extends React.Component { 
     
     // frameRef = React.createRef<Frame>();
-
-    private mainScreenRef = React.createRef<MainScreen>();
 
     componentDidMount() {
 
@@ -22,9 +45,7 @@ class AppContainer extends React.Component {
 
         rootRef.current.navigate({
             create:() => {
-
-                
-                const page = this.mainScreenRef.current.pageRef.current;
+                const page = mainScreenRef.current.pageRef.current;
                 
                 
                 return page;
@@ -35,7 +56,8 @@ class AppContainer extends React.Component {
     render() {
         return (
             <$Frame ref={rootRef}>
-                <MainScreen ref={this.mainScreenRef}/>
+                <MainScreen ref={mainScreenRef}/>
+                <CameraScreen ref={cameraScreenRef}/>
             </$Frame>
         )
     }

@@ -9,6 +9,7 @@ import { AbsoluteLayout } from "tns-core-modules/ui/layouts/absolute-layout/abso
 import { ActionBar } from "tns-core-modules/ui/action-bar";
 import { on,resumeEvent } from "tns-core-modules/application/";
 import CameraScreen from "./CameraScreen";
+import ViewModel from "./ViewModel";
 
 export default class MainScreen extends React.Component {
     
@@ -22,16 +23,26 @@ export default class MainScreen extends React.Component {
 
     componentDidMount() {
         
-        /*
-        CameraScreen.get().build(this.containerRef.current);
-        // fix #8: https://github.com/Lelelo1/tns-linkimager/issues/8
-        if(device.os == "iOS") {
-            on(resumeEvent, () => {
-                console.log("resumed ");
-                CameraScreen.get().refresh();
-            })
-        } 
-        */
+        
+        
+        autorun(() => {
+            const show = ViewModel.get().showCamera;
+            if(show) {
+                /*
+                ViewModel.get().showCamera = false;
+                this.containerRef.current.removeChildren();
+                CameraScreen.get().build(this.containerRef.current);
+                // fix #8: https://github.com/Lelelo1/tns-linkimager/issues/8
+                if(device.os == "iOS") {
+                    on(resumeEvent, () => {
+                        console.log("resumed ");
+                        CameraScreen.get().refresh();
+                    });
+                } 
+                */
+               // ViewModel.get().showCamera = false;
+            }
+        });
     }
 
     render() {
@@ -46,8 +57,8 @@ export default class MainScreen extends React.Component {
                     this.pageRef.current.actionBarHidden = true;
                 }}/>
                 <$AbsoluteLayout ref={this.containerRef}>
-                    <ImagerScreen ref={this.imagerScreenRef} />
-                    <AppBar ref={this.appBarRef} />
+                    <ImagerScreen/> 
+                    <AppBar ref={this.appBarRef}/>
                 </$AbsoluteLayout>
             </$Page>
         )
